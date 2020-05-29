@@ -131,8 +131,8 @@ public:
     gpu_memory_manager = std::make_shared<GPUMemoryManager>(backend);
 #endif
   }
-  CoordsManager(int num_threads): CoordsManager(num_threads, PYTORCH) {}
-  CoordsManager(): CoordsManager(-1, PYTORCH) {}
+  CoordsManager(int num_threads): CoordsManager(num_threads, CUDA) {}
+  CoordsManager(): CoordsManager(-1, CUDA) {}
 
   ~CoordsManager() { clear(); }
 

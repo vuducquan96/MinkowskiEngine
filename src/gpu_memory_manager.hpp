@@ -32,7 +32,7 @@
 
 #include <ATen/ATen.h>
 #include <ATen/cuda/CUDAContext.h>
-#include <c10/cuda/CUDACachingAllocator.h>
+// #include <c10/cuda/CUDACachingAllocator.h>
 
 #include "gpu.cuh"
 #include "types.hpp"
@@ -57,7 +57,7 @@ public:
     CUDA_CHECK(cudaGetDevice(&device_id));
     // std::cout << "GPU set to " << device_id << "\n";
   }
-  GPUMemoryManager() : GPUMemoryManager(PYTORCH) {} // use pytorch by default
+  GPUMemoryManager() : GPUMemoryManager(CUDA) {} // use pytorch by default
   ~GPUMemoryManager() {
     switch (backend) {
     case CUDA: {
@@ -67,9 +67,10 @@ public:
       break;
     }
     case PYTORCH: {
-      for (auto p_buffer : persist_vec_ptr) {
+      ASSERT(false, "Unsupported. Use backend CUDA.");
+      /* for (auto p_buffer : persist_vec_ptr) {
         c10::cuda::CUDACachingAllocator::raw_delete(p_buffer);
-      }
+      }*/
       break;
     }
     }
@@ -107,10 +108,13 @@ public:
     }
     case PYTORCH: {
       // std::cout << "Malloc PYTORCH: " << device_id << std::endl;
+      ASSERT(false, "Unsupported. Use backend CUDA.");
+      /*
       CUDA_CHECK(cudaSetDevice(device_id));
       p_buffer = c10::cuda::CUDACachingAllocator::raw_alloc_with_stream(
           size, at::cuda::getCurrentCUDAStream());
       persist_vec_ptr.push_back(p_buffer);
+      */
       break;
     }
     }

@@ -35,7 +35,7 @@ CPU_COUNT = os.cpu_count()
 if 'OMP_NUM_THREADS' in os.environ:
     CPU_COUNT = int(os.environ['OMP_NUM_THREADS'])
 
-_memory_manager_backend = MemoryManagerBackend.PYTORCH
+_memory_manager_backend = MemoryManagerBackend.CUDA
 
 
 def set_memory_manager_backend(backend: MemoryManagerBackend):
