@@ -152,7 +152,6 @@ else
 endif
 
 all: $(STATIC_LIB)
-	$(RM) -rf build dist
 
 $(OBJ_DIR):
 	@ mkdir -p $@

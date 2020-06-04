@@ -191,7 +191,7 @@ run_command(*compile_args)
 setup(
     name="MinkowskiEngine",
     version=find_version("MinkowskiEngine", "__init__.py"),
-    install_requires=["torch", "numpy"],
+    install_requires=["torch>=1.5", "numpy"],
     packages=["MinkowskiEngine", "MinkowskiEngine.utils", "MinkowskiEngine.modules"],
     package_dir={"MinkowskiEngine": "./MinkowskiEngine"},
     ext_modules=[
