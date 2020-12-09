@@ -4,6 +4,7 @@
 *.swp
 *.swn
 *.pyc
+*.ply
 
 build/
 objs/
