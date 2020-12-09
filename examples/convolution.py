@@ -26,6 +26,7 @@ import torch
 import MinkowskiEngine as ME
 
 from tests.common import data_loader
+from pdb import set_trace as bp
 
 
 def get_random_coords(dimension=2, tensor_stride=2):
@@ -47,6 +48,7 @@ def print_sparse_tensor(tensor):
 
 def conv():
     in_channels, out_channels, D = 2, 3, 2
+    bp()
     coords, feats, labels = data_loader(in_channels, batch_size=1)
 
     # Convolution
@@ -69,6 +71,7 @@ def conv():
 
     # Convolution transpose and generate new coordinates
     strided_coords, tensor_stride = get_random_coords()
+    bp()
 
     input = ME.SparseTensor(
         feats=torch.rand(len(strided_coords), in_channels),  #

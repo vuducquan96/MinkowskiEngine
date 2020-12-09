@@ -34,6 +34,7 @@ import torch
 import MinkowskiEngine as ME
 from examples.minkunet import MinkUNet34C
 from examples.common import Timer
+from pdb import set_trace as bp
 
 # Check if the weights and file exist and download
 if not os.path.isfile('weights.pth'):
@@ -103,6 +104,7 @@ def load_file(file_name):
     pcd = o3d.io.read_point_cloud(file_name)
     coords = np.array(pcd.points)
     colors = np.array(pcd.colors)
+    bp()
     return coords, colors, pcd
 
 
@@ -123,6 +125,7 @@ if __name__ == '__main__':
         voxel_size = 0.02
 
         # Feed-forward pass and get the prediction
+        bp()
         sinput = ME.SparseTensor(
             feats=torch.from_numpy(colors).float(),
             coords=ME.utils.batched_coordinates([coords / voxel_size]),
