@@ -5,6 +5,8 @@
 *.swn
 *.pyc
 *.ply
+*.pth
+*.bin
 
 build/
 objs/
