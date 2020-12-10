@@ -9,6 +9,7 @@
 *.bin
 
 build/
+.idea/
 objs/
 dist/
 MinkowskiEngine.egg-info/
