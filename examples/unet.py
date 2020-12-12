@@ -27,7 +27,8 @@ import MinkowskiEngine as ME
 import MinkowskiEngine.MinkowskiFunctional as MF
 
 from tests.common import data_loader
-
+import pptk
+from pdb import set_trace as bp
 
 class UNet(ME.MinkowskiNetwork):
 
@@ -115,7 +116,12 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     net = net.to(device)
+    # coords = coords.cpu().numpy()
+    # v = pptk.viewer(coords)
+    # v.set(point_size=0.05, phi=3.141, theta=0.785)
+    # bp()
     input = ME.SparseTensor(feat, coords=coords).to(device)
 
     # Forward
     output = net(input)
+    print(output)

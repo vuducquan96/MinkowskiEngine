@@ -34,7 +34,10 @@ import torch
 import MinkowskiEngine as ME
 from examples.minkunet import MinkUNet34C
 from examples.common import Timer
+import pptk
 from pdb import set_trace as bp
+import MinkowskiEngine as ME
+from MinkowskiEngine.modules.resnet_block import BasicBlock, Bottleneck
 
 # Check if the weights and file exist and download
 if not os.path.isfile('weights.pth'):
@@ -103,8 +106,12 @@ SCANNET_COLOR_MAP = {
 def load_file(file_name):
     pcd = o3d.io.read_point_cloud(file_name)
     coords = np.array(pcd.points)
+
+    # v.set(point_size=0.01, phi=3.141, theta=0.785)
+    # bp()
     colors = np.array(pcd.colors)
-    bp()
+    # v = pptk.viewer(colors)
+    # bp()
     return coords, colors, pcd
 
 
@@ -125,12 +132,23 @@ if __name__ == '__main__':
         voxel_size = 0.02
 
         # Feed-forward pass and get the prediction
-        bp()
+        # bp()
         sinput = ME.SparseTensor(
             feats=torch.from_numpy(colors).float(),
             coords=ME.utils.batched_coordinates([coords / voxel_size]),
             quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE
         ).to(device)
+        # sinput = sinput.dense(100,1000,1000)
+        # coords = sinput.C[:,1:]
+        # for x in range(coords.shape[0]):
+        #     tt = coords[x, 2]
+        #     coords[x, 2] = coords[x, 0]
+        #     coords[x, 0] = tt
+
+        coords = coords.cpu().numpy()
+        v = pptk.viewer(coords)
+        v.set(point_size=0.05, phi=3.141, theta=0.785)
+        bp()
         logits = model(sinput).slice(sinput)
 
     _, pred = logits.max(1)

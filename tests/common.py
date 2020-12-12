@@ -25,7 +25,9 @@ import numpy as np
 
 import torch
 import MinkowskiEngine as ME
-
+from pdb import set_trace as bp
+import spconv
+from copy import copy as cp
 
 def get_coords(data):
     coords = []
@@ -35,7 +37,32 @@ def get_coords(data):
                 coords.append([i, j])
     return np.array(coords)
 
+def init_points():
+    points = []
+    x, y, z = 0, 0, 0
+    xx, yy, zz = 2, 2, 2
+    delta = 0.08
 
+    while x < xx:
+        y = 0
+        while y < yy:
+            z = 0
+            while z < zz:
+                if x > y:
+                    points.append([x, y, z])
+                z += delta
+            y += delta
+        x += delta
+    points = np.array(points, dtype=np.float32)
+    point1 = cp(points)
+    point1[:, 0] -= 6
+    point2 = cp(points)
+    point2[:, 0] += 6
+    points = np.concatenate((points, point1, point2), axis=0)
+
+    return points
+
+device = "cuda"
 def data_loader(nchannel=3,
                 max_label=5,
                 is_classification=True,
@@ -44,6 +71,14 @@ def data_loader(nchannel=3,
     if seed >= 0:
         torch.manual_seed(seed)
 
+    # points = init_points()
+    # voxel_size = 0.1
+    # sinput = ME.SparseTensor(
+    #     feats=torch.from_numpy(colors).float(),
+    #     coords=ME.utils.batched_coordinates([points / voxel_size]),
+    #     quantization_mode=ME.SparseTensorQuantizationMode.UNWEIGHTED_AVERAGE
+    # ).to(device)
+
     data = [
         "   X   ",  #
         "  X X  ",  #
@@ -51,6 +86,7 @@ def data_loader(nchannel=3,
     ]
 
     # Generate coordinates
+    # bp()
     coords = [get_coords(data) for i in range(batch_size)]
     coords = ME.utils.batched_coordinates(coords)
 

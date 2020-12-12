@@ -31,7 +31,9 @@ from MinkowskiEngine.modules.resnet_block import BasicBlock, Bottleneck
 
 from tests.common import data_loader
 from examples.resnet import ResNetBase
-
+from pdb import set_trace as bp
+import pptk
+import spconv
 
 class MinkUNetBase(ResNetBase):
     BLOCK = None
@@ -50,6 +52,7 @@ class MinkUNetBase(ResNetBase):
     def network_initialization(self, in_channels, out_channels, D):
         # Output of the first conv concated to conv6
         self.inplanes = self.INIT_DIM
+#        bp()
         self.conv0p1s1 = ME.MinkowskiConvolution(
             in_channels, self.inplanes, kernel_size=5, dimension=D)
 
@@ -120,18 +123,44 @@ class MinkUNetBase(ResNetBase):
         self.relu = ME.MinkowskiReLU(inplace=True)
 
     def forward(self, x):
+        coords = x.C
+        coords = coords.cpu().numpy()
+        v = pptk.viewer(coords)
+        v.set(point_size=0.05, phi=3.141, theta=0.785)
+        # bp()
         out = self.conv0p1s1(x)
+
+        coords = out.C
+        print(coords)
+        # coords = coords.cpu().numpy()
+        # v1 = pptk.viewer(coords)
+        # v1.set(point_size=0.05, phi=3.141, theta=0.785)
+        # bp()
+
         out = self.bn0(out)
         out_p1 = self.relu(out)
 
         out = self.conv1p1s2(out_p1)
+
+        coords = out.C
+        print(coords)
+        # coords = out.C
+        # coords = coords.cpu().numpy()
+        # v2 = pptk.viewer(coords)
+        # v2.set(point_size=0.05, phi=3.141, theta=0.785)
+        # bp()
+
         out = self.bn1(out)
         out = self.relu(out)
         out_b1p2 = self.block1(out)
 
+        # coords = out.C
+        # print(coords)
+        # bp()
         out = self.conv2p2s2(out_b1p2)
         out = self.bn2(out)
         out = self.relu(out)
+
         out_b2p4 = self.block2(out)
 
         out = self.conv3p4s2(out_b2p4)
@@ -262,6 +291,7 @@ if __name__ == '__main__':
 
         # Get new data
         coords, feat, label = data_loader(is_classification=False)
+        # bp()
         input = ME.SparseTensor(feat, coords=coords).to(device)
         label = label.to(device)
 
